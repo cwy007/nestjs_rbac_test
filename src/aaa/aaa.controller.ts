@@ -2,10 +2,12 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { AaaService } from './aaa.service';
 import { CreateAaaDto } from './dto/create-aaa.dto';
 import { UpdateAaaDto } from './dto/update-aaa.dto';
+import { RequireLogin } from 'src/custom-decorator';
 
 @Controller('aaa')
+@RequireLogin()
 export class AaaController {
-  constructor(private readonly aaaService: AaaService) {}
+  constructor(private readonly aaaService: AaaService) { }
 
   @Post()
   create(@Body() createAaaDto: CreateAaaDto) {

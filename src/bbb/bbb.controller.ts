@@ -2,10 +2,12 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { BbbService } from './bbb.service';
 import { CreateBbbDto } from './dto/create-bbb.dto';
 import { UpdateBbbDto } from './dto/update-bbb.dto';
+import { RequireLogin } from 'src/custom-decorator';
 
 @Controller('bbb')
+@RequireLogin()
 export class BbbController {
-  constructor(private readonly bbbService: BbbService) {}
+  constructor(private readonly bbbService: BbbService) { }
 
   @Post()
   create(@Body() createBbbDto: CreateBbbDto) {

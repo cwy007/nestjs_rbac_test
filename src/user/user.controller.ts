@@ -26,8 +26,10 @@ export class UserController {
     const user = await this.userService.login(userLoginDto);
 
     const token = this.jwtService.sign({
-      username: user.username,
-      roles: user.roles,
+      user: {
+        username: user.username,
+        roles: user.roles,
+      }
     });
 
     return {

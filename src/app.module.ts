@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AaaModule } from './aaa/aaa.module';
 import { BbbModule } from './bbb/bbb.module';
+import { LoginGuard } from './login.guard';
 
 @Module({
   imports: [
@@ -38,6 +39,12 @@ import { BbbModule } from './bbb/bbb.module';
     BbbModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: 'APP_GUARD',
+      useClass: LoginGuard,
+    }
+  ],
 })
 export class AppModule { }
