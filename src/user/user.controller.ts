@@ -5,7 +5,13 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
+
+  @Get('init-data')
+  async initData() {
+    await this.userService.initData();
+    return '数据初始化成功';
+  }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
