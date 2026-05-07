@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager } from 'typeorm';
+import { EntityManager, In } from 'typeorm';
 import { User } from './entities/user.entity';
 import { Role } from './entities/role.entity';
 import { Permission } from './entities/permission.entity';
@@ -48,6 +48,14 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async findRolesByRoleIds(roleIds: number[]) {
+    const roles = await this.entityManager.find(Role, {
+      where: { id: In(roleIds) },
+      relations: ['permissions'],
+    });
+    return roles;
   }
 
   async initData() {

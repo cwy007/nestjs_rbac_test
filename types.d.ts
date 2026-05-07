@@ -6,7 +6,7 @@ declare global {
     export interface Request {
       user: {
         username: string;
-        roles: Role[];
+        roleIds: number[];
       }
     }
   }
