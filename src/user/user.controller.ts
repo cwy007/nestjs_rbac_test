@@ -10,7 +10,8 @@ export class UserController {
 
   @Post('login')
   async login(@Body() userLoginDto: UserLoginDto) {
-    return 'This action logs in a user';
+    const user = await this.userService.login(userLoginDto);
+    return user;
   }
 
   @Get('init-data')
