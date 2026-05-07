@@ -2,10 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserLoginDto } from './dto/user-login.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
+
+  @Post('login')
+  async login(@Body() userLoginDto: UserLoginDto) {
+    return 'This action logs in a user';
+  }
 
   @Get('init-data')
   async initData() {
