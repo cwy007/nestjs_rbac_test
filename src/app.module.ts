@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { authPlugins } from 'mysql2';
 import { UserModule } from './user/user.module';
 import { JwtModule } from '@nestjs/jwt';
+import { AaaModule } from './aaa/aaa.module';
+import { BbbModule } from './bbb/bbb.module';
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { JwtModule } from '@nestjs/jwt';
       signOptions: { expiresIn: '7d' },
     }),
     UserModule,
+    AaaModule,
+    BbbModule,
   ],
   controllers: [AppController],
   providers: [AppService],
