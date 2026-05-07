@@ -1,17 +1,43 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Inject,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserLoginDto } from './dto/user-login.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
+  @Inject(JwtService)
+  private readonly jwtService: JwtService;
+
   @Post('login')
   async login(@Body() userLoginDto: UserLoginDto) {
     const user = await this.userService.login(userLoginDto);
-    return user;
+
+    const token = this.jwtService.sign({
+      username: user.username,
+      roles: user.roles,
+    });
+
+    return {
+      code: 200,
+      message: '登录成功',
+      data: {
+        token,
+        user,
+      },
+    };
   }
 
   @Get('init-data')

@@ -36,7 +36,7 @@ export class UserService {
   async login(userLoginDto: UserLoginDto) {
     const user = await this.entityManager.findOne(User, {
       where: { username: userLoginDto.username },
-      relations: ['roles', 'roles.permissions'],
+      relations: ['roles'],
     });
 
     if (!user) {
