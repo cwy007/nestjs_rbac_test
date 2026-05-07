@@ -9,6 +9,7 @@ import { AaaModule } from './aaa/aaa.module';
 import { BbbModule } from './bbb/bbb.module';
 import { LoginGuard } from './login.guard';
 import { PermissionGuard } from './permission.guard';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { PermissionGuard } from './permission.guard';
     UserModule,
     AaaModule,
     BbbModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [

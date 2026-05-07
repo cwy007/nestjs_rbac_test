@@ -4,6 +4,7 @@ import { UserService } from './user/user.service';
 import { Request } from 'express';
 import { Permission } from './user/entities/permission.entity';
 import { Reflector } from '@nestjs/core';
+import { RedisService } from './redis/redis.service';
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
@@ -13,6 +14,9 @@ export class PermissionGuard implements CanActivate {
 
   @Inject(Reflector)
   private readonly reflector: Reflector;
+
+  @Inject(RedisService)
+  private readonly redisService: RedisService;
 
   async canActivate(
     context: ExecutionContext,
@@ -35,12 +39,22 @@ export class PermissionGuard implements CanActivate {
       return true;
     }
 
-    const userRoles = await this.userService.findRolesByRoleIds(user.roleIds);
-    const userPermissions = userRoles.reduce((permissions: Permission[], role) => {
-      return permissions.concat(role.permissions);
-    }, []);
+    const redisKey = `user_permissions:${user.username}`;
+    let userPermissions: Permission[] = [];
+    const cachedPermissions = await this.redisService.get(redisKey);
 
-    console.log('用户权限列表:', userPermissions.map(p => p.name));
+    if (cachedPermissions) {
+      userPermissions = JSON.parse(cachedPermissions);
+      console.log('从 Redis 缓存获取权限:', userPermissions.map(p => p.name));
+    } else {
+      const userRoles = await this.userService.findRolesByRoleIds(user.roleIds);
+      userPermissions = userRoles.reduce((permissions: Permission[], role) => {
+        return permissions.concat(role.permissions);
+      }, []);
+
+      await this.redisService.set(redisKey, JSON.stringify(userPermissions), 60 * 60); // 缓存 1 小时
+      console.log('从数据库查询并添加缓存:', userPermissions.map(p => p.name));
+    }
 
     const hasPermission = requiredPermissions.every(permission =>
       userPermissions.some(userPermission => userPermission.name === permission),
